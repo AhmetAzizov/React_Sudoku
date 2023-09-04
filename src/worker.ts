@@ -1,6 +1,7 @@
+import { locationToIndex } from "./utils/locationToIndex";
 
 let sudokuMatrix: number[] = [];
-let matrixClone: number[] = [];
+// let matrixClone: number[] = [];
 let defaultValues: number[] = [];
 
 onmessage = (e) => {
@@ -27,15 +28,11 @@ onmessage = (e) => {
         return __random.sort(() => Math.random() - 0.5).slice();
     }
 
-    function locationToIndex(row: number, col: number): number {
-        return row * format + col;
-    }
-
     function checkMatrix(sudokuMatrix: number[], row: number, col: number, value: number) {
         for (var i = 0; i < format; i++) {
             if (
-                (i != row && sudokuMatrix[locationToIndex(i, col)] == value) ||
-                (i != col && sudokuMatrix[locationToIndex(row, i)] == value)
+                (i != row && sudokuMatrix[locationToIndex(i, col, format)] == value) ||
+                (i != col && sudokuMatrix[locationToIndex(row, i, format)] == value)
             )
                 return false;
         }
@@ -50,7 +47,7 @@ onmessage = (e) => {
 
                 if (currentX == row && currentY == col) {
                     continue;
-                } else if (sudokuMatrix[locationToIndex(currentX, currentY)] == value) {
+                } else if (sudokuMatrix[locationToIndex(currentX, currentY, format)] == value) {
                     return false;
                 }
             }
@@ -73,13 +70,13 @@ onmessage = (e) => {
             for (var j = 1; j < difficulty; j++) {
                 randomIndex = Math.floor(Math.random() * randomArray.length);
 
-                sudokuMatrix[locationToIndex(i, randomArray[randomIndex])] = null!;
+                sudokuMatrix[locationToIndex(i, randomArray[randomIndex], format)] = null!;
 
                 randomArray.splice(randomIndex, 1);
             }
 
             randomArray.forEach(value => {
-                defaultValues.push(locationToIndex(i, value));
+                defaultValues.push(locationToIndex(i, value, format));
             })
         }
     }
@@ -104,7 +101,7 @@ onmessage = (e) => {
 
                 if (checkMatrix(sudokuMatrix, row, col, randomValue)) {
 
-                    sudokuMatrix[locationToIndex(row, col)] = randomValue;
+                    sudokuMatrix[locationToIndex(row, col, format)] = randomValue;
 
                     randomArray.splice(randomIndex, 1);
                 } else {
@@ -130,7 +127,7 @@ onmessage = (e) => {
                     //   // delete matrixClone[getIndex(row, index + 1)];
                     // }
 
-                    sudokuMatrix.splice(locationToIndex(row, 0));
+                    sudokuMatrix.splice(locationToIndex(row, 0, format));
 
                     col = -1;
                     test = 0;
@@ -147,7 +144,7 @@ onmessage = (e) => {
 
                     // console.log("log6");
 
-                    sudokuMatrix.splice(locationToIndex(row - 1, 0));
+                    sudokuMatrix.splice(locationToIndex(row - 1, 0, format));
 
 
                     //   // delete matrixClone[getIndex(row - 1, index + 1)];
@@ -160,7 +157,7 @@ onmessage = (e) => {
             }
         }
 
-        matrixClone = sudokuMatrix.slice();
+        // matrixClone = sudokuMatrix.slice();
     }
 
 }

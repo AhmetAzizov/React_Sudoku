@@ -1,4 +1,7 @@
 import { MouseEvent, useState, useEffect, useRef } from "react";
+import { locationToIndex } from "./utils/locationToIndex";
+// @ts-ignore
+import workerUrl from "./worker?worker&url";
 import "./style.css";
 
 function App() {
@@ -14,17 +17,17 @@ function App() {
   const setMatrix = (value: typeof matrix) => {
     _matrix.current = value;
     _setMatrix(value);
-  }
+  };
 
   const setLocation = (value: typeof location) => {
     _location.current = value;
     _setLocation(value);
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener('keydown', detectKeyPressed);
+    document.addEventListener("keydown", detectKeyPressed);
 
-    const myWorker = new Worker('./src/worker.ts');
+    const myWorker = new Worker(workerUrl, { type: "module" });
 
     myWorker.postMessage(9);
 
@@ -32,18 +35,16 @@ function App() {
       const [matrix, _defaultValues] = e.data;
       defaultValues.current = _defaultValues;
       setMatrix(matrix);
-    }
+    };
 
     return () => {
-      document.removeEventListener('keydown', detectKeyPressed);
-    }
+      document.removeEventListener("keydown", detectKeyPressed);
+    };
   }, []);
-
 
   if (!location.includes(-1)) {
     checkSameBox(locationRow, locationCol);
   }
-
 
   function detectKeyPressed(e: KeyboardEvent) {
     const key = e.key;
@@ -63,23 +64,36 @@ function App() {
     }
 
     if (key == "Escape") setLocation([-1, -1]);
-    else if (document.getElementById(`${_location.current[0]}:${_location.current[1]}`)?.classList.contains("cellInitial")) return;
-    if (key == "Backspace") cloneMatrix[locationToIndex(_location.current[0], _location.current[1])] = null!;
+    else if (
+      document
+        .getElementById(`${_location.current[0]}:${_location.current[1]}`)
+        ?.classList.contains("cellInitial")
+    )
+      return;
+    if (key == "Backspace")
+      cloneMatrix[locationToIndex(_location.current[0], _location.current[1])] =
+        null!;
     else if (!isNaN(+key) && +key) {
-      cloneMatrix[locationToIndex(_location.current[0], _location.current[1])] = +key;
+      cloneMatrix[locationToIndex(_location.current[0], _location.current[1])] =
+        +key;
     }
 
     setMatrix(cloneMatrix);
   }
 
-
-  function returnCellClass(currentRow: number, currentCol: number, cellValue: number): string {
-
-    var inputOdd: number = Math.ceil((currentRow + 1) / 3) % 2 ^ Math.ceil((currentCol + 1) / 3) % 2;
+  function returnCellClass(
+    currentRow: number,
+    currentCol: number,
+    cellValue: number
+  ): string {
+    var inputOdd: number =
+      Math.ceil((currentRow + 1) / 3) % 2 ^ Math.ceil((currentCol + 1) / 3) % 2;
 
     let classList = `input input${inputOdd}`;
 
-    if (defaultValues.current.includes(locationToIndex(currentRow, currentCol))) {
+    if (
+      defaultValues.current.includes(locationToIndex(currentRow, currentCol))
+    ) {
       classList += " cellInitial";
     }
 
@@ -91,59 +105,59 @@ function App() {
       return classList;
     }
 
-    if (locationRow == currentRow || locationCol == currentCol || hoverIndex.includes(locationToIndex(currentRow, currentCol))) {
-      classList += " cellHover"
+    if (
+      locationRow == currentRow ||
+      locationCol == currentCol ||
+      hoverIndex.includes(locationToIndex(currentRow, currentCol))
+    ) {
+      classList += " cellHover";
     }
 
     if (locationRow == currentRow && locationCol == currentCol) {
-      classList += " cellActive"
+      classList += " cellActive";
     }
 
     return classList;
   }
 
-
-
   function getDivs() {
-
     var elementArray = [];
 
     for (var row = 0; row < 9; row++) {
       for (var col = 0; col < 9; col++) {
-        // var inputOdd = Math.ceil(a / 3) % 2 ^ Math.ceil(b / 3) % 2;
-
         const cellValue: number = matrix[locationToIndex(row, col)];
 
-        var div = <div key={`${row}:${col}`} id={`${row}:${col}`} className={returnCellClass(row, col, cellValue)}>{cellValue}</div>
+        var div = (
+          <div
+            key={`${row}:${col}`} id={`${row}:${col}`} className={returnCellClass(row, col, cellValue)}> {cellValue} </div>
+        );
         elementArray.push(div);
       }
     }
 
-    return elementArray
+    return elementArray;
   }
-
-
 
   let onclickFunction = (e: MouseEvent) => {
     const child = e.target as Element;
 
-    if (!child.classList.contains("input") || child.classList.contains("cellInitial")) {
-      return
-    }
-
-    // console.log("child", (e.target as Element).id);
+    if (!child.classList.contains("input") || child.classList.contains("cellInitial")) return;
 
     const [row, col] = child.id.split(":");
 
     setLocation([+row, +col]);
-  }
-
+  };
 
   function locationToIndex(row: number, col: number): number {
     return row * 9 + col;
   }
 
-  function checkMatrix(sudokuMatrix: number[], row: number, col: number, value: number) {
+  function checkMatrix(
+    sudokuMatrix: number[],
+    row: number,
+    col: number,
+    value: number
+  ) {
     for (var i = 0; i < 9; i++) {
       if (
         (i != row && sudokuMatrix[locationToIndex(i, col)] == value) ||
@@ -170,7 +184,6 @@ function App() {
     return true;
   }
 
-
   function checkSameBox(row: number, col: number) {
     var startX = Math.floor(row / 3);
     var startY = Math.floor(col / 3);
@@ -185,19 +198,13 @@ function App() {
     }
   }
 
-
-
-
-
-
   return (
     <>
       <div id="sudokuContainer" onClick={onclickFunction}>
         {getDivs()}
       </div>
     </>
-  )
+  );
 }
 
-
-export default App
+export default App;
