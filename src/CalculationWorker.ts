@@ -1,14 +1,15 @@
 import { locationToIndex } from "./utils/locationToIndex";
+import { checkMatrix } from "./utils/CheckMatrix";
+
 
 let sudokuMatrix: number[] = [];
-// let matrixClone: number[] = [];
 let defaultValues: number[] = [];
 
 onmessage = (e) => {
 
-    let format = e.data;
+    const [format, difficulty] = e.data;
 
-    const __random: number[] = Array(format).fill(0).map((_, i) => i + 1);
+    const __random: number[] = Array(format).fill(0).map((_, i) => i + 1);    
 
     creatMatrix();
 
@@ -28,45 +29,42 @@ onmessage = (e) => {
         return __random.sort(() => Math.random() - 0.5).slice();
     }
 
-    function checkMatrix(sudokuMatrix: number[], row: number, col: number, value: number) {
-        for (var i = 0; i < format; i++) {
-            if (
-                (i != row && sudokuMatrix[locationToIndex(i, col, format)] == value) ||
-                (i != col && sudokuMatrix[locationToIndex(row, i, format)] == value)
-            )
-                return false;
-        }
+    // function checkMatrix(sudokuMatrix: number[], row: number, col: number, value: number) {
+    //     for (var i = 0; i < format; i++) {
+    //         if (
+    //             (i != row && sudokuMatrix[locationToIndex(i, col, format)] == value) ||
+    //             (i != col && sudokuMatrix[locationToIndex(row, i, format)] == value)
+    //         )
+    //             return false;
+    //     }
 
-        var startX = Math.floor(row / 3);
-        var startY = Math.floor(col / 3);
+    //     var startX = Math.floor(row / (format/3));
+    //     var startY = Math.floor(col / 3);
 
-        for (var x = 0; x < 3; x++) {
-            var currentX = startX * 3 + x;
-            for (var y = 0; y < 3; y++) {
-                var currentY = startY * 3 + y;
+    //     for (var x = 0; x < (format/3); x++) {
+    //         var currentX = startX * (format/3) + x;
+    //         for (var y = 0; y < 3; y++) {
+    //             var currentY = startY * 3 + y;
 
-                if (currentX == row && currentY == col) {
-                    continue;
-                } else if (sudokuMatrix[locationToIndex(currentX, currentY, format)] == value) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    //             if (currentX == row && currentY == col) {
+    //                 continue;
+    //             } else if (sudokuMatrix[locationToIndex(currentX, currentY, format)] == value) {
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
 
 
     function createDifficulty() {
-
-        const difficulty = 6;
 
         let randomIndex: number;
         let randomArray: number[];
 
         for (var i = 0; i < format; i++) {
-
-            randomArray = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-
+            randomArray = Array(format).fill(0).map((_, i) => i);     
+                   
             for (var j = 1; j < difficulty; j++) {
                 randomIndex = Math.floor(Math.random() * randomArray.length);
 
@@ -94,12 +92,12 @@ onmessage = (e) => {
             var randomArray = getRandomArray();
             var test = 0;
 
-            for (var col = 0; col < 9; col++) {
+            for (var col = 0; col < format; col++) {
                 var randomIndex: number = Math.floor(Math.random() * (randomArray.length));
 
                 var randomValue: number = randomArray[randomIndex];
 
-                if (checkMatrix(sudokuMatrix, row, col, randomValue)) {
+                if (checkMatrix(sudokuMatrix, row, col, randomValue, format)) {
 
                     sudokuMatrix[locationToIndex(row, col, format)] = randomValue;
 
