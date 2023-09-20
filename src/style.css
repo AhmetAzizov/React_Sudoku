@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
 :root,
@@ -22,6 +23,7 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -149,30 +151,29 @@ body {
   width: 100%;
   height: 100%;
   gap: 4rem;
-  padding-top: 4rem;
+  padding-block: 4rem;
   align-items: center;
   overflow-y: auto;
 }
 
 .startButton {
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  text-decoration: none;
   font-size: 2.5rem;
   font-weight: bold;
-  border-radius: 3rem;
+  border-radius: 1rem;
   background-color: green;
   color: black;
-  transition: 200ms ease-in;
-  text-decoration: none;
+  transition: 150ms ease-in;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-inline: 3rem;
-  padding-block: 1rem;
+  width: 15rem;
+  height: 4rem;
 }
 
 .startButton:hover {
   background-color: darkGreen;
-  border-radius: 0;
+  border-radius: 3rem;
 }
 
 .optionWrapper {
@@ -181,23 +182,31 @@ body {
   display: flex;
   justify-content: space-evenly;
   flex-direction: row;
-  gap: 0.5rem;
-  margin-inline: 0.5rem;
+  gap: 1rem;
+  margin-inline: 1rem;
 }
 
 .option {
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  border: 2px solid gray;
-  border-radius: 2rem;
+  border-radius: 1.5rem;
   font-size: 2rem;
   font-weight: bold;
   display: grid;
   place-items: center;
   width: 14rem;
   height: 4rem;
-  transition: border 80ms;
+  transition: transform 150ms;
+
+  -webkit-box-shadow: 0px 0px 1.6rem 0px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 0px 0px 1.6rem 0px rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 0px 1.6rem 0px rgba(0, 0, 0, 0.45);
+}
+
+.option:hover {
+  transform: translateY(0.25rem);
 }
 
 .option.selected {
-  border: 4px solid gray;
+  -webkit-box-shadow: 0px 0px 2rem 0px rgba(255, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 2rem 0px rgba(255, 0, 0, 0.75);
+  box-shadow: 0px 0px 2rem 0px rgba(255, 255, 255, 0.55);
 }

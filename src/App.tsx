@@ -6,10 +6,11 @@ import { GameValueContext } from "./hooks/gameValueContext";
 
 function App() {
   const [format, setFormat] = useState(0);
+  const [difficulty, setDifficulty] = useState(0);
 
   return (
     <Router>
-      <GameValueContext.Provider value={{ format, setFormat }}>
+      <GameValueContext.Provider value={{ format, setFormat, difficulty, setDifficulty }}>
         <Routes >
           <Route path="/" element={<MainPage />} />
           <Route path="/game" element={<MatrixComponent />} />

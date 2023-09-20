@@ -8,9 +8,8 @@ import { useGameValueContext } from "./hooks/gameValueContext";
 import { useNavigate } from "react-router-dom";
 
 const MatrixComponent = () => {
-
-    const { format } = useGameValueContext();
-    const difficulty = 5;
+    const { format, difficulty: _difficulty } = useGameValueContext();
+    const difficulty = format === 6 ? _difficulty : _difficulty * 1.5;
 
     const navigate = useNavigate();
     const [location, _setLocation] = useState([-1, -1]);
@@ -40,25 +39,36 @@ const MatrixComponent = () => {
         document.addEventListener("keydown", detectKeyPressed);
         document.addEventListener("click", onScreenPressedUnfocus);
 
-        const myWorker = new Worker(calculationWorkerUrl, { type: "module" });
+        const calculationWorker = new Worker(calculationWorkerUrl, { type: "module" });
 
-        myWorker.postMessage([format, difficulty]);
+        calculationWorker.postMessage([format, difficulty]);
 
-        myWorker.onmessage = (e) => {
+        calculationWorker.onmessage = (e) => {
             const [matrix, _defaultValues] = e.data;
-
-            querySelector('.loadingScreen')?.classList.add('gone');
-
+            querySelector('.loadingScreen').classList.add('gone');
             defaultValues.current = _defaultValues;
             setMatrix(matrix);
         };
 
+
+        // fetch('http://localhost:3500/')
+        //     .then(res => res.json())
+        //     .then(json => {
+        //         const { matrix, defaultvalues }: { matrix: number[], defaultvalues: number[] } = json;
+
+        //         querySelector('.loadingScreen').classList.add('gone');
+        //         defaultValues.current = defaultvalues;
+        //         setMatrix(matrix);
+        //     })
+
         return () => {
+            calculationWorker.terminate();
             document.removeEventListener("keydown", detectKeyPressed);
             document.removeEventListener("click", onScreenPressedUnfocus);
             window.removeEventListener("beforeunload", handleReload);
         };
     }, []);
+
 
     useMemo(() => {
         if (location.includes(-1)) return;
@@ -115,7 +125,7 @@ const MatrixComponent = () => {
 
 
 
-    function returnCellClass(currentRow: number, currentCol: number, cellValue: number): string {
+    function returnCellClass(currentRow: number, currentCol: number): string {
         var inputOdd: number = Math.ceil((currentRow + 1) / (format / 3)) % 2 ^ Math.ceil((currentCol + 1) / 3) % 2;
 
         let classList = `input input${inputOdd}`;
@@ -177,7 +187,7 @@ const MatrixComponent = () => {
                         id={`cell${row}:${col}`}
                         data-row={row}
                         data-col={col}
-                        className={returnCellClass(row, col, cellValue)}
+                        className={returnCellClass(row, col)}
                     >
                         <div
                             className="placeholder"
