@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 import "./style.css";
 import { useGameValueContext } from "./hooks/gameValueContext";
-import { useEffect } from "react";
 
 const MainPage = () => {
 

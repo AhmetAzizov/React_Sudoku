@@ -7,10 +7,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-utils/CalculationWorker.ts
+src/CalculationWorker.ts
 
 node_modules
-dist
+dist 
 dist-ssr
 *.local
 

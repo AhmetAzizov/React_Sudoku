@@ -43,7 +43,7 @@ const MatrixComponent = () => {
 
         calculationWorker.postMessage([format, difficulty]);
 
-        calculationWorker.onmessage = (e) => {
+        calculationWorker.onmessage = (e: MessageEvent<[number[], number[]]>) => {
             const [matrix, _defaultValues] = e.data;
             querySelector('.loadingScreen').classList.add('gone');
             defaultValues.current = _defaultValues;
@@ -75,13 +75,13 @@ const MatrixComponent = () => {
 
         hoverIndex.current = [];
 
-        var startX = Math.floor(locationRow / (format / 3));
-        var startY = Math.floor(locationCol / 3);
+        const startX = Math.floor(locationRow / (format / 3));
+        const startY = Math.floor(locationCol / 3);
 
-        for (var x = 0; x < (format / 3); x++) {
-            var currentX = startX * (format / 3) + x;
-            for (var y = 0; y < 3; y++) {
-                var currentY = startY * 3 + y;
+        for (let x = 0; x < (format / 3); x++) {
+            const currentX = startX * (format / 3) + x;
+            for (let y = 0; y < 3; y++) {
+                const currentY = startY * 3 + y;
 
                 hoverIndex.current.push(locationToIndex(currentX, currentY, format));
             }
@@ -91,8 +91,8 @@ const MatrixComponent = () => {
     useMemo(() => {
         errorArray.current = [];
 
-        for (var row = 0; row < format; row++) {
-            for (var col = 0; col < format; col++) {
+        for (let row = 0; row < format; row++) {
+            for (let col = 0; col < format; col++) {
                 if (!checkMatrix(matrix, row, col, matrix[locationToIndex(row, col, format)], format)) {
                     errorArray.current.push(locationToIndex(row, col, format));
                 }
@@ -126,7 +126,7 @@ const MatrixComponent = () => {
 
 
     function returnCellClass(currentRow: number, currentCol: number): string {
-        var inputOdd: number = Math.ceil((currentRow + 1) / (format / 3)) % 2 ^ Math.ceil((currentCol + 1) / 3) % 2;
+        const inputOdd: number = Math.ceil((currentRow + 1) / (format / 3)) % 2 ^ Math.ceil((currentCol + 1) / 3) % 2;
 
         let classList = `input input${inputOdd}`;
 
@@ -175,10 +175,10 @@ const MatrixComponent = () => {
     };
 
     function returnCells() {
-        let elementArray: Array<JSX.Element> = [];
+        const elementArray: Array<JSX.Element> = [];
 
-        for (var row = 0; row < format; row++) {
-            for (var col = 0; col < format; col++) {
+        for (let row = 0; row < format; row++) {
+            for (let col = 0; col < format; col++) {
                 const cellValue: number = matrix[locationToIndex(row, col, format)];
 
                 elementArray.push(
